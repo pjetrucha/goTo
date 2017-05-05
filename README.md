@@ -50,7 +50,7 @@ $(el).goTo({
 });
 ```
 
-> Note: Callback will call immediately if start and end position of scrolling is same.
+> **Note:** Callback will call immediately if start and end position of scrolling is same.
 
 ### #2
 
@@ -70,7 +70,7 @@ $(el).goTo({
 ### #3
 
 Lets say we have page with scrollHeight equals 1000px. If we doesn't know that value, and we want to scroll to the end of that page in 1 second, we can set `to` to some large Integer like for example 999999. But this will result in bad experience, beacuse default the `goTo` function will not calculate max value it can scroll. So in this example it will try to scroll 999999px in 1 second, but effect on page will be visible only for 1000px (scrollHeight) in ~1ms (1000/999999 part of second) and the rest of time (~999ms - before callback occures) there will be no visual effect. To prevent this situation you can set `calculate: true` and then function will be calculate the min and the max value before scrolling animation occure.
-> Note: 999999 is only example value and in some case it can be not enough, so you can set `Infinity` but remember to set `calculate: true` also :)
+> **Note:** 999999 is only example value and in some case it can be not enough, so you can set `Infinity` but remember to set `calculate: true` also :)
 
 ```
 goTo({
