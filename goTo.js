@@ -1,5 +1,5 @@
 /*
- * goTo - smooth, non-expensive way to scrolling elements using rAF
+ * goTo - smooth, non-expensive way for scrolling elements using rAF
  * https://github.com/pjetrucha/goTo
  *
  * @author Piotr Chrobak
