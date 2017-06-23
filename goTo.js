@@ -10,7 +10,7 @@
 
 	var defaults = {
 		el: window,
-		to: {x: null, y: null},
+		to: {x: null, y: 0},
 		speed: 500,
 		calculate: false,
 		callback: null,
