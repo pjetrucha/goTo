@@ -10,7 +10,7 @@
 
 	var defaults = {
 		el: window,
-		to: {x: null, y: 0},
+		to: {x: null, y: null},
 		speed: 500,
 		calculate: false,
 		callback: null,
@@ -27,6 +27,9 @@
 		/* backward compatibility */
 		if(typeof config.to === "number"){
 			config.to = $.extend({}, defaults.to, {y: config.to});
+		}
+		else if(config.to.x === null && config.to.y === null){
+			config.to.y = 0;
 		}
 
 		if(config.calculate){
