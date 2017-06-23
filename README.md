@@ -1,6 +1,6 @@
 # goTo
 
-Function allows to scroll elements on page in a smooth, non-expensive way using rAF. By now it can scroll only verticaly in both direction.
+Function allows to scroll elements on page in a smooth, non-expensive way using rAF. ~~By now it can scroll only verticaly in both direction.~~ It supports both X and Y directions.
 
 ---
 
@@ -16,7 +16,7 @@ or
 
 - `options` [*Optional*] - An object with additional parameters.
    - `el` [*default: window*] - HTMLObject to scroll. If method is used on a jQuery object this value will be filled automatically.
-   - `to` [*default: 0*] - Position to which method should scroll.
+   - `to` [*default: {x: null, y: null}*] - Position to which method should scroll. It accepts also `Number` which became `{x: null, y: Number}`. `Null` means function should not update this scrollTop/Left value. If there's equality `x == y == null`, `to` became `{x: null, y: 0}`.
    - `calculate` [*default: false*] - If *true* plugin will calculate min and max value to which it can scroll smoothly.
    - `callback` [*default: null*] - Function to call when scrolling will end. It provides one argument (boolean) which determinates if animation was interupt by users' mousewheel. Callback (if sets) will call always.
    - `listen` [*default: true*] - Determine if function should listen users' mousewheel event to interupt scrolling process.
@@ -44,6 +44,15 @@ goTo({
 ```
 $(el).goTo({
 	to: 100,
+	callback: function(){
+		console.log('done');
+	}
+});
+```
+&nbsp;
+```
+$(el).goTo({
+	to: {x: 100, y: 200},
 	callback: function(){
 		console.log('done');
 	}
