@@ -10,7 +10,7 @@
 
 	var defaults = {
 		el: window,
-		to: 0,
+		to: {x: null, y: null},
 		speed: 500,
 		calculate: false,
 		callback: null,
@@ -22,28 +22,44 @@
 
 	function goTo(opts){
 
-		var config = $.extend({}, defaults, opts);
+		var config = $.extend(true, {}, defaults, opts);
 
-		/* if `to` equals 0 there's no need to calculate */
-		if(config.to !== 0 && config.calculate){
-			config.to = Math.min(Math.max(0, config.to), config.el === window ?
-				document.documentElement.scrollHeight - window.innerHeight :
-				config.el.scrollHeight - config.el.offsetHeight
-			);
+		/* backward compatibility */
+		if(typeof config.to === "number"){
+			config.to = $.extend({}, defaults.to, {y: config.to});
+		}
+
+		if(config.calculate){
+			/* if `to` equals 0 || null there's no need to calculate */
+			if(config.to.x){
+				config.to.x = Math.min(Math.max(0, config.to.x), config.el === window ?
+					document.documentElement.scrollWidth - window.innerWidth :
+					config.el.scrollWidth - config.el.offsetWidth
+				);
+			}
+			if(config.to.y){
+				config.to.y = Math.min(Math.max(0, config.to.y), config.el === window ?
+					document.documentElement.scrollHeight - window.innerHeight :
+					config.el.scrollHeight - config.el.offsetHeight
+				);
+			}
 		}
 
 		var step = 0,
 			max = Math.round(Math.max(1, (config.speed / 16.666))),
 			from = getPos(),
 			stopped = false,
-			setPos = config.el === window ? function(pos){
-				window.scrollTo(0, pos);
-			} : function(pos){
-				config.el.scrollTop = pos;
+			setPos = config.el === window ? window.scrollTo : function(x, y){
+				config.el.scrollLeft = x;
+				config.el.scrollTop = y;
+			},
+			skip = {
+				x: config.to.x === null,
+				y: config.to.y === null
 			};
 
 		/* if distance is empty just skip */
-		if(from === config.to){
+		if(from.x === config.to.x && from.y === config.to.y){
 			step = max + 1;
 		}
 		else if(config.listen){
@@ -55,22 +71,33 @@
 			stopped = true;
 		}
 
-		function getPos(){
+		function getElement(){
 			if(config.el === window){
 				if(document.documentElement.scrollTop == 0){
-					return document.body.scrollTop;
+					return document.body;
 				}
 				else{
-					return document.documentElement.scrollTop;
+					return document.documentElement;
 				}
 			}
-			else return config.el.scrollTop;
+			else return config.el;
+		}
+
+		function getPos(){
+			var el = getElement();
+			return {
+				x: el.scrollLeft,
+				y: el.scrollTop
+			};
 		}
 
 		void function loop(){
 			if(!stopped && step <= max){
 				requestAnimationFrame(loop);
-				setPos(config.easing(step, from, -from + config.to, max));
+				setPos(
+					skip.x ? from.x : config.easing(step, from.x, -from.x + config.to.x, max),
+					skip.y ? from.y : config.easing(step, from.y, -from.y + config.to.y, max)
+				);
 				step++;
 			}
 			else{
